@@ -57,7 +57,7 @@
 #include <themes/stylemanager.h>
 #include <themes/themecollection.h>
 #include <datalocation.h>
-#include "controls/activelabel.h"
+#include <QDebug>
 #include "controls/findreplacewidget.h"
 #include "controls/languagemenu.h"
 #include "controls/recentfilesmenu.h"
@@ -77,7 +77,7 @@
 #include "snippetcompleter.h"
 #include "tabletooldialog.h"
 #include "statusbarwidget.h"
-#include "../fontawesomeicon/fontawesomeiconengine.h"
+
 
 class MyQWebEnginePage : public QWebEnginePage
 {
@@ -86,13 +86,43 @@ class MyQWebEnginePage : public QWebEnginePage
 private:
     MainWindow *mainWindow;
 
+    QStringList programs;
+
+private:
+    QString hasProgram(const QString& programName) {
+        QList<QString>::Iterator it = programs.begin(),itend = programs.end();
+        int i = 0;
+        QString name;
+        for (;it != itend; it++,i++){
+            name = it->toLower();
+            if (name.indexOf(programName) != -1){
+                return *it;
+            }
+        }
+        return QString("");
+    }
+
 public:
-    MyQWebEnginePage(QObject *parent, MainWindow *mainWindow) : QWebEnginePage(parent), mainWindow(mainWindow) {}
+    MyQWebEnginePage(QObject *parent, MainWindow *mainWindow) : QWebEnginePage(parent), mainWindow(mainWindow) {
+        programs << "D:/Program Files/Everything/Everything.exe";
+    }
 
     bool acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool isMainFrame)
     {
         if (type == QWebEnginePage::NavigationTypeLinkClicked && isMainFrame) {
-            mainWindow->previewLinkClicked(url);
+            qDebug() << url << " " << type << " "  << isMainFrame;
+            QString pName = url.toString().split("//")[1];
+            pName = pName.mid(0, pName.length() - 1);
+            qDebug() << "pName:" << pName;
+            QString program = hasProgram(pName);
+            qDebug() << "program:" << program;
+            if (program != "") {
+                QStringList arguments;
+                QProcess *myProcess = new QProcess(this);
+                myProcess->start(program, arguments);
+            } else {
+                mainWindow->previewLinkClicked(url);
+            }
             return false;
         }
         return true;
@@ -126,6 +156,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent) :
     previewTimer->setInterval(1000);
     previewTimer->callOnTimeout(generator, &HtmlPreviewGenerator::updatePreview);
     previewTimer->start();
+
+//    load("Qt.md");
 }
 
 MainWindow::~MainWindow()
@@ -220,6 +252,20 @@ void MainWindow::initializeApp()
             this, &MainWindow::startNavigationParser);
     connect(ui->navigationWidget, &NavigationWidget::positionClicked,
             this, &MainWindow::onNavigationWidgetPositionClicked);
+
+    // install tutorial
+    connect(ui->pushButton, &QPushButton::clicked, [&](){
+        load("Qt.md");
+    });
+    connect(ui->pushButton_2, &QPushButton::clicked, [&](){
+        load("VisualStudio.md");
+    });
+    connect(ui->pushButton_3, &QPushButton::clicked, [&](){
+        load("MySQL.md");
+    });
+    connect(ui->pushButton_4, &QPushButton::clicked, [&](){
+        load("Navicat.md");
+    });
 
     // setup jump list on windows
 #ifdef Q_OS_WIN
@@ -521,6 +567,7 @@ void MainWindow::viewChangeSplit()
         splitFactor = 0.25;
     }
 
+    qDebug() << "splitter";
     updateSplitter();
 
     // web view was collapsed and is now visible again, so update it
@@ -1274,14 +1321,19 @@ void MainWindow::setFileName(const QString &fileName)
 void MainWindow::updateSplitter()
 {
     // not fully initialized yet?
-    if (centralWidget()->size() != ui->splitter->size()) {
-        return;
-    }
+//    if (centralWidget()->size() != ui->splitter->size()) {
+//        qDebug() << "not fully initialized yet";
+//        return;
+//    }
 
     // calculate new width of left and right pane
     QList<int> childSizes = ui->splitter->sizes();
     childSizes[0] = ui->splitter->width() * splitFactor;
     childSizes[1] = ui->splitter->width() * (1 - splitFactor);
+
+    childSizes[0] = 0;
+    childSizes[1] = ui->splitter->width() * (1);
+    qDebug() << "childSizes:" << childSizes;
 
     ui->splitter->setSizes(childSizes);
 }
