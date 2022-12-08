@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webenginewidgets printsupport
+QT       += core gui webenginewidgets printsupport sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -69,7 +69,9 @@ SOURCES += \
     snippetstablemodel.cpp \
     aboutdialog.cpp \
     statusbarwidget.cpp \
-    controls/navigationwidget.cpp
+    controls/navigationwidget.cpp \
+    login/login.cpp \
+    sql/sql.cpp
 
 win32 {
     SOURCES += \
@@ -111,7 +113,9 @@ HEADERS  += \
     aboutdialog.h \
     statusbarwidget.h \
     savefileadapter.h \
-    controls/navigationwidget.h
+    controls/navigationwidget.h \
+    login/login.h \
+    sql/sql.h
 
 FORMS    += \
     controls/fileexplorerwidget.ui \

@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
     }
 
     MainWindow w(fileName);
-    w.show();
+//    w.show();
 
     return app.exec();
 }

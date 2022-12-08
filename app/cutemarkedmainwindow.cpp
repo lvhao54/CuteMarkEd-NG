@@ -144,6 +144,9 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent) :
     rightViewCollapsed(false),
     channel(new QWebChannel(this))
 {
+    m_login = new Login();
+    m_login->show();
+
     ui->setupUi(this);
     setupUi();
 
@@ -158,7 +161,15 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent) :
     previewTimer->start();
 
 //    load("Qt.md");
+    // 登录成功信号连接显示主界面槽
+    connect(m_login, &Login::loginSucceed, this, &MainWindow::loginSucceedShow);
 }
+
+void MainWindow::loginSucceedShow()
+{
+    this->show();
+}
+
 
 MainWindow::~MainWindow()
 {

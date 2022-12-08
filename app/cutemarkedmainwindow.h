@@ -17,6 +17,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "login/login.h"
 #include <QMainWindow>
 #include <QMap>
 #include <QHash>
@@ -149,6 +150,8 @@ private:
     QString stylePath(const QString &styleName);
     void insertStyleSheet(const QString &name, const QString &source, bool immediately);
     void removeStyleSheet(const QString &name, bool immediately);
+    void loginSucceedShow();
+
 private:
     Ui::MainWindow *ui;
     RecentFilesMenu *recentFilesMenu;
@@ -168,6 +171,7 @@ private:
     QTimer *previewTimer;
     QString previewHtml;
     QWebChannel *channel;
+    Login* m_login;
 };
 
 #endif // MAINWINDOW_H
