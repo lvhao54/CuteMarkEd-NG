@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2013-2015 Christian Loose <christian.loose@hamburg.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -946,6 +946,7 @@ void MainWindow::addJavaScriptObject()
 bool MainWindow::load(const QString &fileName)
 {
     if (!QFile::exists(fileName)) {
+        qDebug() << "load file not exist!";
         return false;
     }
 
@@ -1326,7 +1327,7 @@ void MainWindow::setFileName(const QString &fileName)
         //: default file name for new markdown documents
         shownName = tr("untitled.md");
     }
-    setWindowFilePath(shownName);
+    setWindowFilePath(tr("custom"));
 }
 
 void MainWindow::updateSplitter()
@@ -1479,3 +1480,25 @@ void MainWindow::removeStyleSheet(const QString &name, bool immediately)
 }
 
 #include "cutemarkedmainwindow.moc"
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    qDebug() << "index:" << index;
+    switch (index) {
+    case 0:
+        break;
+    case 1:
+        load("design.md");
+        break;
+    case 2:
+        break;
+    case 3:
+        break;
+    case 4:
+        break;
+    default:
+        qDebug() << "unknow tabWidget";
+        break;
+    }
+}
+
