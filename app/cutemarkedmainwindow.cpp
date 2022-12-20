@@ -105,6 +105,7 @@ private:
 public:
     MyQWebEnginePage(QObject *parent, MainWindow *mainWindow) : QWebEnginePage(parent), mainWindow(mainWindow) {
         programs << "D:/Program Files/Everything/Everything.exe";
+        programs << "C:/Program Files/Microsoft VS Code/Code.exe";
     }
 
     bool acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool isMainFrame)
@@ -1491,6 +1492,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         load("design.md");
         break;
     case 2:
+        load("debug_and_run.md");
         break;
     case 3:
         break;
